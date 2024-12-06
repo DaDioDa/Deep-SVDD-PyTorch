@@ -6,7 +6,7 @@ from .cifar10_LeNet_elu import CIFAR10_LeNet_ELU, CIFAR10_LeNet_ELU_Autoencoder
 def build_network(net_name):
     """Builds the neural network."""
 
-    implemented_networks = ('mnist_LeNet', 'cifar10_LeNet', 'cifar10_LeNet_ELU')
+    implemented_networks = ('mnist_LeNet', 'cifar10_LeNet', 'cifar10_LeNet_ELU', 'feature_net')
     assert net_name in implemented_networks
 
     net = None
@@ -19,6 +19,10 @@ def build_network(net_name):
 
     if net_name == 'cifar10_LeNet_ELU':
         net = CIFAR10_LeNet_ELU()
+
+    if net_name == 'feature_net':
+        from networks.featureNet import FeatureNet  # 确保已实现 FeatureNet 类
+        net = FeatureNet(input_dim=116)  # 传入适合你的特征向量的维度
 
     return net
 

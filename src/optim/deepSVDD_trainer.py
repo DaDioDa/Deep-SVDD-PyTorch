@@ -122,11 +122,19 @@ class DeepSVDDTrainer(BaseTrainer):
         start_time = time.time()
         idx_label_score = []
         net.eval()
+
+        tmp = []
+
         with torch.no_grad():
             for data in test_loader:
                 inputs, labels, idx = data
                 inputs = inputs.to(self.device)
+
+                # 找到你了 小調皮
                 outputs = net(inputs)
+                # 弄你
+                tmp.append(outputs.cpu().data.numpy())
+
                 dist = torch.sum((outputs - self.c) ** 2, dim=1)
                 if self.objective == 'soft-boundary':
                     scores = dist - self.R ** 2
@@ -137,6 +145,7 @@ class DeepSVDDTrainer(BaseTrainer):
                 idx_label_score += list(zip(idx.cpu().data.numpy().tolist(),
                                             labels.cpu().data.numpy().tolist(),
                                             scores.cpu().data.numpy().tolist()))
+            
 
         self.test_time = time.time() - start_time
         logger.info('Testing time: %.3f' % self.test_time)
@@ -152,6 +161,7 @@ class DeepSVDDTrainer(BaseTrainer):
         logger.info('Test set AUC: {:.2f}%'.format(100. * self.test_auc))
 
         logger.info('Finished testing.')
+
 
     def init_center_c(self, train_loader: DataLoader, net: BaseNet, eps=0.1):
         """Initialize hypersphere center c as the mean from an initial forward pass on the data."""
@@ -180,3 +190,4 @@ class DeepSVDDTrainer(BaseTrainer):
 def get_radius(dist: torch.Tensor, nu: float):
     """Optimally solve for radius R via the (1-nu)-quantile of distances."""
     return np.quantile(np.sqrt(dist.clone().data.cpu().numpy()), 1 - nu)
+

@@ -85,6 +85,10 @@ class DeepSVDD(object):
         self.results['test_time'] = self.trainer.test_time
         self.results['test_scores'] = self.trainer.test_scores
 
+    def getNet(self):
+        return self.net
+        
+
     def pretrain(self, dataset: BaseADDataset, optimizer_name: str = 'adam', lr: float = 0.001, n_epochs: int = 100,
                  lr_milestones: tuple = (), batch_size: int = 128, weight_decay: float = 1e-6, device: str = 'cuda',
                  n_jobs_dataloader: int = 0):
@@ -140,3 +144,4 @@ class DeepSVDD(object):
         """Save results dict to a JSON-file."""
         with open(export_json, 'w') as fp:
             json.dump(self.results, fp)
+
