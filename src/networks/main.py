@@ -22,7 +22,7 @@ def build_network(net_name):
 
     if net_name == 'feature_net':
         from networks.featureNet import FeatureNet  # 确保已实现 FeatureNet 类
-        net = FeatureNet(input_dim=116)  # 传入适合你的特征向量的维度
+        net = FeatureNet()  # 传入适合你的特征向量的维度
 
     return net
 
